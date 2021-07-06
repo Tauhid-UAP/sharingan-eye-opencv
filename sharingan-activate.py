@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from decouple import config
 
 # if True, performs operations on still image
 # if False, performs operations on own video frames
@@ -208,7 +209,7 @@ def eye_process(coords, face_frame, threshold, sharingan_img):
         # to pixel locations of eyeball_frame
         # i.e, copy sharingan to eyeball
         eyeball_frame[:, :] = sharingan_img
-        
+
         # cv2.circle(eye_frame, (cx - 1, cy + 3), circle_radius + 1, (0, 0, 255), 1)
 
         return
@@ -239,10 +240,14 @@ detector_params.filterByArea = True
 detector_params.maxArea = 1500
 detector = cv2.SimpleBlobDetector_create(detector_params)
 
-sharingan_img = cv2.imread('sharingan-images/three-tomoe.png')
+# get path of sharingan image from .env file
+sharingan_img_path = config('SHARINGAN_IMG_PATH')
+sharingan_img = cv2.imread(sharingan_img_path)
 
 def test_main():
-    img = cv2.imread('opencv-face.jpeg')
+    # get path of the model face image from .env file
+    opencv_face_path = config('OPENCV_FACE_PATH')
+    img = cv2.imread(opencv_face_path)
     frame_process(img, 'Image', sharingan_img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
